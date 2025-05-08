@@ -35,5 +35,3 @@ logs/
 
 *.db
 *.sqlite3
-
-*.sh
