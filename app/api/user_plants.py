@@ -29,6 +29,10 @@ async def create_user_plant_form(
     Якщо зображення не надано, використовується дефолтне.
     """
     try:
+        # Валідація довжини імені
+        if len(name) > 20:
+            raise HTTPException(status_code=400, detail="Plant name cannot exceed 20 characters")
+            
         plant = db.query(Plant).filter(Plant.id == plant_id).first()
         if not plant:
             raise HTTPException(status_code=404, detail="Рослину не знайдено в базі даних")

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
 from app.schemas.plant import PlantResponse
@@ -14,7 +14,7 @@ class CareStatus(BaseModel):
 
 class UserPlantBase(BaseModel):
     plant_id: int
-    name: str
+    name: str = Field(..., max_length=20)
     last_watering: datetime
     last_sunfilling: datetime
     image: str
@@ -32,7 +32,7 @@ class UserPlantListItem(BaseModel):
         from_attributes = True
 
 class UserPlantUpdate(BaseModel):
-    name: Optional[str] = None
+    name: Optional[str] = Field(None, max_length=20)
     last_watering: Optional[datetime] = None
     last_sunfilling: Optional[datetime] = None
     image: Optional[str] = None

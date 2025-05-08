@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from app.api import auth, plants, user_plants
+from app.api import auth, plants, user_plants, password_reset, password_validation
 from app.utils.init_defaults import init_default_images
 
 default_images = init_default_images() 
@@ -25,6 +25,8 @@ app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 app.include_router(auth.router)
 app.include_router(plants.router)
 app.include_router(user_plants.router)
+app.include_router(password_reset.router)
+app.include_router(password_validation.router)
 
 @app.get("/")
 def read_root():
