@@ -2,6 +2,7 @@ fastapi>=0.100.0
 uvicorn>=0.22.0
 sqlalchemy>=2.0.13
 pydantic[email]>=2.0.0
+pydantic-settings>=2.0.0
 pymysql>=1.0.3
 python-jose>=3.3.0
 passlib>=1.7.4
