@@ -1,5 +1,4 @@
 from pydantic import BaseModel, EmailStr, field_validator
-from typing import Optional
 
 class PasswordResetRequest(BaseModel):
     email: EmailStr

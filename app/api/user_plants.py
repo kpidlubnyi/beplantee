@@ -5,7 +5,7 @@ from app.schemas.user_plant import UserPlantResponse, UserPlantListItem
 from app.services.user_plant_service import (
     get_user_plants_minimal, delete_user_plant, record_watering, 
     record_sunfilling, create_user_plant_with_image, remove_plant_image,
-    create_user_plant_without_image
+    create_user_plant_without_image, update_user_plant
 )
 from app.utils.image_handler import get_default_image_path
 from app.database import get_db
@@ -29,7 +29,6 @@ async def create_user_plant_form(
     Якщо зображення не надано, використовується дефолтне.
     """
     try:
-        # Валідація довжини імені
         if len(name) > 20:
             raise HTTPException(status_code=400, detail="Plant name cannot exceed 20 characters")
             
@@ -134,3 +133,48 @@ async def delete_plant_image(
     """
     success = await remove_plant_image(id, current_user.id, db)
     return {"success": success, "message": "Image removed and set to default"}
+
+@router.patch("/{id}", response_model=UserPlantResponse)
+async def update_user_plant_endpoint(
+    id: int,
+    name: Optional[str] = Form(None),
+    plant_id: Optional[int] = Form(None),
+    file: Optional[UploadFile] = File(None),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Aktualizuje istniejącą roślinę użytkownika.
+    Można zmienić nazwę, rodzaj rośliny lub dodać nowe zdjęcie.
+    """
+    try:
+        if not any([name, plant_id, file]):
+            raise HTTPException(
+                status_code=400, 
+                detail="At least one of the fields (name, plant_id, file) must be provided"
+            )
+        
+        update_data = {}
+        if name:
+            update_data["name"] = name
+        if plant_id:
+            update_data["plant_id"] = plant_id
+        
+        # Sprawdź, czy plik jest prawidłowy
+        valid_file = False
+        if file is not None:
+            try:
+                await file.seek(0)
+                content = await file.read(1)
+                valid_file = len(content) > 0
+                await file.seek(0)
+            except:
+                valid_file = False
+        
+        # Zaktualizuj roślinę
+        result = await update_user_plant(db, id, current_user.id, update_data, file if valid_file else None)
+        return result
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
