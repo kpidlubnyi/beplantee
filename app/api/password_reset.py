@@ -9,7 +9,7 @@ router = APIRouter(prefix="/password-reset", tags=["password reset"])
 @router.post("/verify-email")
 def verify_user_email(request: PasswordResetRequest, db: Session = Depends(get_db)):
     """
-    Перевіряє, чи існує користувач із вказаною електронною поштою.
+    Sprawdza czy istnieje użytkownik ze wszkazanym emailem.
     """
     user_exists = verify_email_exists(db, request.email)
     
@@ -24,7 +24,7 @@ def verify_user_email(request: PasswordResetRequest, db: Session = Depends(get_d
 @router.post("/reset")
 def reset_password(request: PasswordReset, db: Session = Depends(get_db)):
     """
-    Змінює пароль для користувача з вказаною електронною поштою.
+    Zamienia hasło dla użytkownika ze wskazanym emailem.
     """
     success = reset_password_by_email(db, request.email, request.password)
     

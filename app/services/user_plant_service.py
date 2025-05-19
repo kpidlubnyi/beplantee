@@ -219,26 +219,21 @@ async def update_user_plant(db: Session, id: int, user_id: int, update_data: Dic
     if not db_user_plant:
         raise HTTPException(status_code=404, detail="User plant not found")
     
-    # Sprawdź, czy istnieje nowa roślina, jeśli zmieniono plant_id
     if update_data.get("plant_id"):
         plant = db.query(Plant).filter(Plant.id == update_data.get("plant_id")).first()
         if not plant:
             raise HTTPException(status_code=404, detail="Plant not found in database")
         db_user_plant.plant_id = update_data.get("plant_id")
     
-    # Zaktualizuj nazwę, jeśli podano
     if update_data.get("name"):
         db_user_plant.name = update_data.get("name")
     
-    # Zaktualizuj zdjęcie, jeśli podano
     if file and hasattr(file, "filename") and file.filename:
         try:
-            # Usuń stare zdjęcie, jeśli nie jest domyślne
             default_image = get_default_image_path()
             if db_user_plant.image and db_user_plant.image != default_image["filename"]:
                 delete_image(db_user_plant.image)
             
-            # Zapisz nowe zdjęcie
             image_data = await save_image(file)
             if image_data:
                 db_user_plant.image = image_data["filename"]
@@ -246,7 +241,6 @@ async def update_user_plant(db: Session, id: int, user_id: int, update_data: Dic
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Failed to update image: {str(e)}")
     
-    # Zapisz zmiany w bazie danych
     try:
         db.commit()
         db.refresh(db_user_plant)

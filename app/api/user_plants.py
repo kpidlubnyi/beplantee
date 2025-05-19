@@ -25,8 +25,8 @@ async def create_user_plant_form(
     current_user: User = Depends(get_current_user)
 ):
     """
-    Створити нову рослину користувача через форму.
-    Якщо зображення не надано, використовується дефолтне.
+    Utworzyć nową roślinę użytkownika za pomocą formularza.
+    Jeśli zdjęcie nie podane, używamy standardowego.
     """
     try:
         if len(name) > 20:
@@ -67,7 +67,7 @@ def get_all_user_plants(
     current_user: User = Depends(get_current_user)
 ):
     """
-    Отримати всі рослини користувача у спрощеному форматі.
+    Otrzymać wszystkie rośliny użytkownika w sproszczonym formacie.
     """
     return get_user_plants_minimal(db, current_user.id)
 
@@ -78,7 +78,7 @@ def get_single_user_plant(
     current_user: User = Depends(get_current_user)
 ):
     """
-    Отримати інформацію про конкретну рослину користувача за id.
+    Otrzymać informację o konkretnej roślinie użytkownika po id.
     """
     plant = db.query(UserPlant).filter(
         UserPlant.id == id, 
@@ -96,7 +96,7 @@ def remove_user_plant(
     current_user: User = Depends(get_current_user)
 ):
     """
-    Видалити рослину з колекції користувача за id.
+    Usunąć roślinę z kolekcji użytkownika po id.
     """
     return delete_user_plant(db, id, current_user.id)
 
@@ -107,7 +107,7 @@ def water_plant(
     current_user: User = Depends(get_current_user)
 ):
     """
-    Записати дату останнього поливу для рослини за id.
+    Zapisać datę ostatniego podlewu rośliny po id.
     """
     return record_watering(db, id, current_user.id)
 
@@ -118,7 +118,7 @@ def sunfill_plant(
     current_user: User = Depends(get_current_user)
 ):
     """
-    Записати дату останнього насонечнювання для рослини за id.
+    Zapisać datę ostatniego sunfillingu dla rośliny po id.
     """
     return record_sunfilling(db, id, current_user.id)
 
@@ -129,7 +129,7 @@ async def delete_plant_image(
     current_user: User = Depends(get_current_user)
 ):
     """
-    Видалити зображення рослини та встановити стандартне за id.
+    Usunąć zdjęcie rośliny po id i ustawić standardowe 
     """
     success = await remove_plant_image(id, current_user.id, db)
     return {"success": success, "message": "Image removed and set to default"}
@@ -160,7 +160,6 @@ async def update_user_plant_endpoint(
         if plant_id:
             update_data["plant_id"] = plant_id
         
-        # Sprawdź, czy plik jest prawidłowy
         valid_file = False
         if file is not None:
             try:
@@ -171,7 +170,6 @@ async def update_user_plant_endpoint(
             except:
                 valid_file = False
         
-        # Zaktualizuj roślinę
         result = await update_user_plant(db, id, current_user.id, update_data, file if valid_file else None)
         return result
     except HTTPException as he:

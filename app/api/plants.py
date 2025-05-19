@@ -10,15 +10,15 @@ router = APIRouter(prefix="/plants", tags=["plants"])
 @router.get("/dropdown-options", response_model=List[Dict[str, Any]])
 def get_plants_dropdown(db: Session = Depends(get_db)):
     """
-    Отримати список рослин для випадаючого списку.
-    Використовує збережену процедуру getPlantNamesForDropdown.
+    Otrzymać listę roślin do droplisty.
+    Używa procedury getPlantNamesForDropdown.
     """
     return get_plants_for_dropdown(db)
 
 @router.get("/{plant_id}", response_model=PlantResponse)
 def read_plant(plant_id: int, db: Session = Depends(get_db)):
     """
-    Отримати інформацію про конкретну рослину.
+    Otrzymać informację o konkretnej roślinie.
     """
     plant = get_plant(db, plant_id)
     if plant is None:
