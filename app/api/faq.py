@@ -23,7 +23,7 @@ def get_faq():
                     },
                     {
                         "question": "Do I need to create an account to use BePlantee?",
-                        "answer": "Yes, you need to create an account to use BePlantee. This allows us to save your plant collection and care history, and provide you with personalized reminders."
+                        "answer": "Yes, you need to create an account to use BePlantee. This allows us to save your plant collection and care history."
                     }
                 ]
             },
@@ -116,10 +116,6 @@ def get_faq():
                     {
                         "question": "What browsers are supported?",
                         "answer": "BePlantee works on all modern browsers, including Chrome, Firefox, Safari, and Edge. For the best experience, we recommend using the latest version of your preferred browser."
-                    },
-                    {
-                        "question": "Does BePlantee work on mobile devices?",
-                        "answer": "Yes, BePlantee is designed to be responsive and works on both desktop and mobile devices. You can access it through your mobile browser without needing to install an app."
                     },
                     {
                         "question": "Is my data backed up?",
