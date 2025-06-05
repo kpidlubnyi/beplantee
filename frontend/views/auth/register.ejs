@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body class="auth-body">
+    <div class="auth-container">
+        <div class="auth-background">
+            <div class="auth-overlay"></div>
+        </div>
+        
+        <div class="auth-header">
+            <span class="auth-header-link">SIGN UP</span>
+        </div>
+        
+        <div class="auth-content">
+            <div class="auth-logo">
+                <a href="/" class="auth-logo-link">
+                    <h1>BEPLANTEE</h1>
+                </a>
+            </div>
+            
+            <div class="auth-form-container">
+                <% if (errors && errors.length > 0) { %>
+                    <div class="error-messages">
+                        <% errors.forEach(function(error) { %>
+                            <div class="error-message"><%= error %></div>
+                        <% }); %>
+                    </div>
+                <% } %>
+                
+                <form class="auth-form" action="/auth/register" method="POST" id="registerForm">
+                    <div class="form-group">
+                        <input 
+                            type="text" 
+                            name="username" 
+                            placeholder="USERNAME" 
+                            class="form-input"
+                            value="<%= formData.username || '' %>"
+                            required
+                            autocomplete="username"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <input 
+                            type="email" 
+                            name="email" 
+                            placeholder="EMAIL" 
+                            class="form-input"
+                            value="<%= formData.email || '' %>"
+                            required
+                            autocomplete="email"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <input 
+                            type="password" 
+                            name="password" 
+                            placeholder="PASSWORD" 
+                            class="form-input"
+                            required
+                            autocomplete="new-password"
+                            minlength="8"
+                        >
+                    </div>
+                    
+                    <button type="submit" class="auth-submit-btn">
+                        SIGN UP
+                    </button>
+                </form>
+                
+                <div class="auth-switch">
+                    <a href="/auth/login" class="auth-switch-link">
+                        ALREADY HAVE ACCOUNT?
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/js/auth.js"></script>
+</body>
+</html>

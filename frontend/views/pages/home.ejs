@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+<body class="home-body">
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-left">
+            </div>
+            
+            <div class="nav-center">
+                <a href="/" class="nav-logo-link">
+                    <h1 class="nav-title">BEPLANTEE</h1>
+                </a>
+            </div>
+            
+            <div class="nav-right">
+                <% if (isAuthenticated) { %>
+                    <div class="nav-buttons">
+                        <a href="/plant-types" class="nav-button plants-btn">PLANTS</a>
+                        <a href="/plants" class="nav-button my-plants-btn">MY PLANTS</a>
+                        <a href="/auth/logout" class="nav-button logout-btn">LOGOUT</a>
+                    </div>
+                <% } else { %>
+                    <div class="nav-buttons">
+                        <a href="/plant-types" class="nav-button plants-btn">PLANTS</a>
+                        <a href="/auth/login" class="nav-button auth-btn">SIGN UP / SIGN IN</a>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="hero-background">
+            <div class="hero-overlay"></div>
+        </div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">WELCOME TO<br>BEPLANTEE</h1>
+            <p class="hero-subtitle">YOUR DIGITAL GARDEN COMPANION</p>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="features-container">
+            <div class="features-left">
+                <h2 class="features-title">WHAT BEPLANTEE OFFERS</h2>
+                
+                <div class="feature-item">
+                    <h3 class="feature-title">TRACK YOUR PLANTS:</h3>
+                    <p class="feature-description">
+                        ADD YOUR PERSONAL COLLECTION OF PLANTS AND UPLOAD
+                        BEAUTIFUL PHOTOS TO WATCH THEIR GROWTH JOURNEY.
+                    </p>
+                </div>
+
+                <div class="feature-item">
+                    <h3 class="feature-title">CARE SCHEDULE:</h3>
+                    <p class="feature-description">
+                        NEVER FORGET TO WATER OR PROVIDE SUNLIGHT TO YOUR
+                        PLANTS AGAIN! SET REMINDERS AND LOG CARE ACTIONS LIKE
+                        WATERING, FERTILIZING, AND REPOTTING.
+                    </p>
+                </div>
+
+                <div class="feature-item">
+                    <h3 class="feature-title">PLANT INFORMATION:</h3>
+                    <p class="feature-description">
+                        ACCESS DETAILED CARE INSTRUCTIONS FOR EACH OF YOUR
+                        PLANTS, FROM WATER REQUIREMENTS TO SUNLIGHT NEEDS.
+                    </p>
+                </div>
+
+                <div class="feature-item">
+                    <h3 class="feature-title">EXTENSIVE DATABASE:</h3>
+                    <p class="feature-description">
+                        EXPLORE OUR COLLECTION OF OVER 200 HOUSEPLANT SPECIES
+                        WITH DETAILED CARE GUIDELINES TO HELP YOUR PLANTS THRIVE.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="features-right">
+                <div class="features-image"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="cta-background">
+            <div class="cta-overlay"></div>
+        </div>
+        
+        <div class="cta-content">
+            <h2 class="cta-title">
+                JOIN OUR COMMUNITY TODAY<br>
+                AND WATCH YOUR INDOOR<br>
+                GARDEN FLOURISH!
+            </h2>
+            
+            <p class="cta-description">
+                WHETHER YOU'RE A SEASONED PLANT PARENT OR JUST GETTING STARTED WITH YOUR
+                FIRST LEAFY FRIEND, BEPLANTEE IS DESIGNED TO MAKE PLANT CARE SIMPLE AND
+                ENJOYABLE.
+            </p>
+            
+            <% if (!isAuthenticated) { %>
+                <a href="/auth/register" class="cta-button">SIGN UP / SIGN IN</a>
+            <% } %>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <div class="footer-section">
+                    <h4 class="footer-title">HELP</h4>
+                    <a href="/faq" class="footer-link">FAQ</a>
+                    <a href="mailto:support@beplantee.com" class="footer-link">MAIL</a>
+                </div>
+            </div>
+            
+            <div class="footer-right">
+                <div class="footer-section">
+                    <h4 class="footer-title">FOLLOW US</h4>
+                    <a href="https://instagram.com" target="_blank" class="footer-link">INSTA</a>
+                    <a href="https://facebook.com" target="_blank" class="footer-link">FACEBOOK</a>
+                    <a href="https://snapchat.com" target="_blank" class="footer-link">SNAPCHAT</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

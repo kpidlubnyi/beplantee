@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/faq.css">
+</head>
+<body class="faq-body">
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-left">
+            </div>
+            
+            <div class="nav-center">
+                <a href="/" class="nav-logo-link">
+                    <h1 class="nav-title">BEPLANTEE</h1>
+                </a>
+            </div>
+            
+<div class="nav-right">
+                <% if (isAuthenticated) { %>
+                    <div class="nav-buttons">
+                        <a href="/plant-types" class="nav-button plants-btn">PLANTS</a>
+                        <a href="/plants" class="nav-button my-plants-btn">MY PLANTS</a>
+                    </div>
+                <% } else { %>
+                    <div class="nav-buttons">
+                        <a href="/plant-types" class="nav-button plants-btn">PLANTS</a>
+                        <a href="/auth/login" class="nav-button auth-btn">SIGN UP / SIGN IN</a>
+                    </div>
+                <% } %>
+            </div>        </div>
+    </nav>
+
+    <main class="faq-main">
+        <div class="faq-container">
+            <div class="faq-header">
+                <h1 class="faq-title">Frequently Asked Questions</h1>
+            </div>
+
+            <div class="faq-content">
+                <% if (faqData && faqData.categories && faqData.categories.length > 0) { %>
+                    <% faqData.categories.forEach(function(category, categoryIndex) { %>
+                        <div class="faq-category">
+                            <h2 class="category-title"><%= category.title %></h2>
+                            
+                            <div class="faq-items">
+                                <% category.items.forEach(function(item, itemIndex) { %>
+                                    <div class="faq-item" data-category="<%= categoryIndex %>" data-item="<%= itemIndex %>">
+                                        <button class="faq-question" type="button">
+                                            <span class="question-text"><%= item.question %></span>
+                                            <span class="faq-icon">
+                                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                            </span>
+                                        </button>
+                                        
+                                        <div class="faq-answer">
+                                            <div class="answer-content">
+                                                <p><%= item.answer %></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="faq-error">
+                        <p>Sorry, we couldn't load the FAQ content at this time. Please try again later.</p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/faq.js"></script>
+</body>
+</html>

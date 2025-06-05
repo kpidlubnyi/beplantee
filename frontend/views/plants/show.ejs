@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/plant-show.css">
+</head>
+<body class="plant-show-body">
+    <nav class="plant-show-nav">
+        <div class="nav-container">
+            <div class="nav-left">
+            </div>
+            
+            <div class="nav-center">
+                <a href="/" class="nav-logo-link">
+                    <h1 class="nav-title">BEPLANTEE</h1>
+                </a>
+            </div>
+            
+            <div class="nav-right">
+                <a href="/plants" class="my-plants-nav-btn">MY PLANTS</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="plant-show-main">
+        <div class="plant-show-container">
+            <div class="plant-show-layout">
+                <div class="plant-card-large">
+                    <div class="plant-image-large">
+                        <img src="<%= typeof apiBaseUrl !== 'undefined' ? apiBaseUrl : 'http://localhost:8000' %>/uploads/<%= plant.image || plant.thumbnail || 'default_plant.png' %>" 
+                             alt="<%= plant.name %>" 
+                             class="plant-photo-large"
+                             data-fallback="<%= typeof apiBaseUrl !== 'undefined' ? apiBaseUrl : 'http://localhost:8000' %>/uploads/default_plant.png">                        
+                        <div class="plant-actions">
+                            <a href="/plant-types/<%= plant.plant_id %>" class="action-btn info-btn" title="Plant Information">
+                                i
+                            </a>
+                            
+                            <a href="/plants/<%= plant.id %>/edit" class="action-btn edit-btn" title="Edit Plant">
+                                ✎
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="plant-name-large">
+                        <%= plant.name %>
+                    </div>
+                </div>
+
+                <div class="plant-info-section">
+                    <div class="plant-details">
+                        <h1 class="plant-scientific-name">
+                            <% if (plant.plant && plant.plant.scientific_name) { %>
+                                <%= plant.plant.scientific_name %>
+                            <% } else { %>
+                                ROSLINIUS PAPOROTNIKUS
+                            <% } %>
+                        </h1>
+
+                        <div class="care-info">
+                            <div class="care-item">
+                                <div class="care-label">Last Time Watered:</div>
+                                <div class="care-date">
+                                    <%= new Date(plant.last_watering).toLocaleDateString('en-GB') %> 
+                                    <%= new Date(plant.last_watering).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) %>
+                                </div>
+                            </div>
+
+                            <div class="care-item">
+                                <div class="care-label">Last Time Sun-Filled:</div>
+                                <div class="care-date">
+                                    <%= new Date(plant.last_sunfilling).toLocaleDateString('en-GB') %> 
+                                    <%= new Date(plant.last_sunfilling).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) %>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="plant-care-actions">
+                            <button class="care-action-btn water-btn" data-plant-id="<%= plant.id %>">
+                                Water
+                            </button>
+                            <button class="care-action-btn sunfill-btn" data-plant-id="<%= plant.id %>">
+                                Sun-Fill
+                            </button>                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="delete-plant-container">
+        <button class="delete-plant-btn" title="Delete Plant">
+            −
+        </button>   
+    </div>
+
+    <div class="modal-overlay" id="deleteModal">
+        <div class="delete-modal">
+            <div class="modal-question">Are you sure you want to delete</div>
+            <div class="modal-plant-name"><%= plant.name %></div>
+            <div class="modal-actions">
+                <button class="modal-btn confirm-delete-btn" data-plant-id="<%= plant.id %>">
+                    Yes, I am
+                </button>
+                <button class="modal-btn cancel-btn">
+                    Back
+                </button>                
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initPlantShowPage();
+            console.log('🌱 Plant Show page initialized');
+        });
+
+        function initPlantShowPage() {
+            initCareButtons();
+            initDeleteModal();
+            initImageLoadError();
+            enhanceAccessibility();
+        }
+
+        function initCareButtons() {
+            const waterBtn = document.querySelector('.water-btn');
+            const sunfillBtn = document.querySelector('.sunfill-btn');
+            
+            if (waterBtn) {
+                waterBtn.addEventListener('click', function() {
+                    const plantId = this.dataset.plantId;
+                    waterPlant(plantId);
+                    this.classList.add('loading');
+                    this.disabled = true;
+                });
+            }
+
+            if (sunfillBtn) {
+                sunfillBtn.addEventListener('click', function() {
+                    const plantId = this.dataset.plantId;
+                    sunfillPlant(plantId);
+                    this.classList.add('loading');
+                    this.disabled = true;
+                });
+            }
+        }
+
+        function initDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            const deleteBtn = document.querySelector('.delete-plant-btn');
+            const cancelBtn = document.querySelector('.cancel-btn');
+            const confirmBtn = document.querySelector('.confirm-delete-btn');
+
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', showDeleteModal);
+            }
+
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', hideDeleteModal);
+            }
+
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', function() {
+                    const plantId = this.dataset.plantId;
+                    confirmDelete(plantId);
+                });
+            }            
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        hideDeleteModal();
+                    }
+                });
+            }
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
+                    hideDeleteModal();
+                }
+            });
+        }
+
+        function showDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                setTimeout(() => {
+                    const cancelBtn = modal.querySelector('.cancel-btn');
+                    if (cancelBtn) cancelBtn.focus();
+                }, 100);
+            }
+        }
+
+        function hideDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+                
+                const deleteBtn = document.querySelector('.delete-plant-btn');
+                if (deleteBtn) deleteBtn.focus();
+            }
+        }
+
+        async function waterPlant(plantId) {
+            try {
+                const response = await fetch(`/plants/${plantId}/water`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (response.ok) {
+                    showNotification('Plant watered successfully! 💧', 'success');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    throw new Error('Failed to water plant');
+                }
+            } catch (error) {
+                console.error('Error watering plant:', error);
+                showNotification('Failed to water plant', 'error');
+                
+                const waterBtn = document.querySelector('.water-btn');
+                if (waterBtn) {
+                    waterBtn.classList.remove('loading');
+                    waterBtn.disabled = false;
+                }
+            }
+        }
+
+        async function sunfillPlant(plantId) {
+            try {
+                const response = await fetch(`/plants/${plantId}/sunfill`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (response.ok) {
+                    showNotification('Sunlight recorded successfully! ☀️', 'success');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    throw new Error('Failed to record sunlight');
+                }
+            } catch (error) {
+                console.error('Error recording sunlight:', error);
+                showNotification('Failed to record sunlight', 'error');
+                
+                const sunfillBtn = document.querySelector('.sunfill-btn');
+                if (sunfillBtn) {
+                    sunfillBtn.classList.remove('loading');
+                    sunfillBtn.disabled = false;
+                }
+            }
+        }
+
+        async function confirmDelete(plantId) {
+            const confirmBtn = document.querySelector('.confirm-delete-btn');
+            
+            if (confirmBtn) {
+                confirmBtn.classList.add('loading');
+                confirmBtn.disabled = true;
+            }
+            
+            try {
+                const response = await fetch(`/plants/${plantId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (response.ok) {
+                    showNotification('Plant deleted successfully', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/plants';
+                    }, 1000);
+                } else {
+                    throw new Error('Failed to delete plant');
+                }
+            } catch (error) {
+                console.error('Error deleting plant:', error);
+                showNotification('Failed to delete plant', 'error');
+                
+                if (confirmBtn) {
+                    confirmBtn.classList.remove('loading');
+                    confirmBtn.disabled = false;
+                }
+                hideDeleteModal();
+            }
+        }
+
+        function initImageLoadError() {
+            const plantImage = document.querySelector('.plant-photo-large');
+            if (plantImage) {
+                plantImage.addEventListener('error', function() {
+                    console.log('Plant image failed to load, using default');
+                    const fallbackSrc = this.dataset.fallback;
+                    if (fallbackSrc && this.src !== fallbackSrc) {
+                        this.src = fallbackSrc;
+                    }
+                });
+            }
+        }
+
+        function enhanceAccessibility() {
+            const infoBtn = document.querySelector('.info-btn');
+            const editBtn = document.querySelector('.edit-btn');
+            const deleteBtn = document.querySelector('.delete-plant-btn');
+            
+            if (infoBtn) {
+                infoBtn.setAttribute('aria-label', 'View plant information');
+            }
+            
+            if (editBtn) {
+                editBtn.setAttribute('aria-label', 'Edit plant details');
+            }
+            
+            if (deleteBtn) {
+                deleteBtn.setAttribute('aria-label', 'Delete plant');
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            if (window.BePlantee && window.BePlantee.showNotification) {
+                window.BePlantee.showNotification(message, type);
+            } else {
+                console.log(`${type}: ${message}`);
+                alert(message);
+            }
+        }
+    </script>
+    </body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/plants.css">
+    
+    <style>
+        .care-indicator svg {
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+    </style>
+</head>
+<body class="plants-body">
+    <nav class="plants-nav">
+        <div class="nav-container">
+            <div class="nav-left">
+            </div>
+            
+            <div class="nav-center">
+                <a href="/" class="nav-logo-link">
+                    <h1 class="nav-title">BEPLANTEE</h1>
+                </a>
+            </div>
+            
+            <div class="nav-right">
+                <a href="/plant-types" class="plants-nav-btn">PLANTS</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="plants-main">
+        <div class="plants-container">
+            <div class="plants-grid">
+                <% if (plants && plants.length > 0) { %>
+                    <% plants.forEach(function(plant) { %>
+                        <div class="plant-card" data-plant-id="<%= plant.id %>">
+                            <a href="/plants/<%= plant.id %>" class="plant-card-link">
+                                <div class="plant-image">
+                                    <img src="<%= typeof apiBaseUrl !== 'undefined' ? apiBaseUrl : 'http://localhost:8000' %>/uploads/<%= plant.thumbnail || plant.image || 'thumbnails/default_plant_thumbnail.png' %>" 
+                                        alt="<%= plant.name %>" 
+                                        class="plant-photo"
+                                        loading="lazy"
+                                        data-fallback="<%= typeof apiBaseUrl !== 'undefined' ? apiBaseUrl : 'http://localhost:8000' %>/uploads/thumbnails/default_plant_thumbnail.png">                  
+                                         
+                                    <% if (process.env.NODE_ENV === 'development') { %>
+                                        <div style="position: absolute; bottom: 0; left: 0; background: rgba(0,0,0,0.7); color: white; font-size: 10px; padding: 2px;">
+                                            <%= plant.thumbnail || plant.image || 'default' %>
+                                        </div>
+                                    <% } %>
+                                    
+                                    <div class="care-indicators">
+                                        <div class="care-indicator watering-indicator" 
+                                             data-level="<%= plant.watering_level || 1 %>"
+                                             title="Watering Level: <%= plant.watering_level || 1 %>/5">
+                                            <img src="/images/vectors/water-drop.svg" 
+                                                 alt="Water" 
+                                                 class="care-icon">
+                                        </div>
+                                        
+                                        <div class="care-indicator sunlight-indicator" 
+                                             data-level="<%= plant.sunfilling_level || 1 %>"
+                                             title="Sunlight Level: <%= plant.sunfilling_level || 1 %>/5">
+                                            <img src="/images/vectors/sun.svg" 
+                                                 alt="Sun" 
+                                                 class="care-icon">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="plant-name">
+                                    <%= plant.name %>
+                                </div>
+                            </a>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="empty-state">
+                        <div class="empty-icon">🌱</div>
+                        <h3>No plants yet</h3>
+                        <p>Add your first plant to start your digital garden!</p>
+                    </div>
+                <% } %>
+            </div>
+
+            <div class="add-plant-container">
+                <a href="/plants/add" class="add-plant-btn" title="Add New Plant">
+                    <svg class="add-icon" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                    </svg>
+                </a>
+            </div>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="error-state">
+                    <div class="error-icon">⚠️</div>
+                    <p><%= error %></p>
+                    <button onclick="location.reload()" class="retry-btn">Try Again</button>
+                </div>
+            <% } %>
+        </div>
+    </main>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/plants.js"></script>
+</body>
+</html>

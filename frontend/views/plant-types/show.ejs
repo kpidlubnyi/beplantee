@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/plant-details.css">
+</head>
+<body class="plant-details-body">
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-left">
+            </div>
+            
+            <div class="nav-center">
+                <a href="/" class="nav-logo-link">
+                    <h1 class="nav-title">BEPLANTEE</h1>
+                </a>
+            </div>
+            
+            <div class="nav-right">
+                <% if (isAuthenticated) { %>
+                    <div class="nav-buttons">
+                        <a href="/plant-types" class="nav-button plants-btn">PLANTS</a>
+                        <a href="/plants" class="nav-button my-plants-btn">MY PLANTS</a>
+                    </div>
+                <% } else { %>
+                    <div class="nav-buttons">
+                        <a href="/plant-types" class="nav-button plants-btn">PLANTS</a>
+                        <a href="/auth/login" class="nav-button auth-btn">SIGN UP / SIGN IN</a>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </nav>
+
+    <main class="plant-details-main">
+        <div class="plant-details-container">
+            <div class="plant-details-card">
+                <div class="plant-info-section">
+                    <div class="plant-header">
+                        <h1 class="plant-name"><%= plant.common_name || plant.scientific_name %></h1>
+                        <% if (plant.common_name && plant.scientific_name && plant.common_name !== plant.scientific_name) { %>
+                            <p class="scientific-name"><em><%= plant.scientific_name %></em></p>
+                        <% } %>
+                    </div>
+
+                    <div class="info-block">
+                        <h2 class="info-title">INFORMATION</h2>
+                        
+                        <div class="plant-details-grid">
+                            <% if (plant.family) { %>
+                                <div class="detail-item">
+                                    <span class="detail-label">Family:</span>
+                                    <span class="detail-value"><%= plant.family %></span>
+                                </div>
+                            <% } %>
+                            
+                            <% if (plant.origin) { %>
+                                <div class="detail-item">
+                                    <span class="detail-label">Type:</span>
+                                    <span class="detail-value"><%= plant.origin %></span>
+                                </div>
+                            <% } %>
+                            
+                            <% if (plant.type) { %>
+                                <div class="detail-item">
+                                    <span class="detail-label">Origin:</span>
+                                    <span class="detail-value"><%= plant.type %></span>
+                                </div>
+                            <% } %>
+                            
+                            <% if (plant.dimension) { %>
+                                <div class="detail-item">
+                                    <span class="detail-label">Dimension:</span>
+                                    <span class="detail-value"><%= plant.dimension %></span>
+                                </div>
+                            <% } %>
+                            
+                            <% if (plant.cycle) { %>
+                                <div class="detail-item">
+                                    <span class="detail-label">Cycle:</span>
+                                    <span class="detail-value"><%= plant.cycle %></span>
+                                </div>
+                            <% } %>
+                            
+                            <% if (plant.watering) { %>
+                                <div class="detail-item">
+                                    <span class="detail-label">Watering:</span>
+                                    <span class="detail-value"><%= plant.watering %></span>
+                                </div>
+                            <% } %>
+                            
+                            <% if (plant.sunlight) { %>
+                                <div class="detail-item">
+                                    <span class="detail-label">Sunlight:</span>
+                                    <span class="detail-value"><%= plant.sunlight %></span>
+                                </div>
+                            <% } %>
+                            
+                            <% if (plant.pruning_month) { %>
+                                <div class="detail-item">
+                                    <span class="detail-label">Pruning Month:</span>
+                                    <span class="detail-value"><%= plant.pruning_month %></span>
+                                </div>
+                            <% } %>
+                            
+                            <% if (plant.poisonous_to_humans) { %>
+                                <div class="detail-item">
+                                    <span class="detail-label">Poisonous to Humans:</span>
+                                    <span class="detail-value"><%= plant.poisonous_to_humans %></span>
+                                </div>
+                            <% } %>
+                            
+                            <% if (plant.poisonous_to_pets) { %>
+                                <div class="detail-item">
+                                    <span class="detail-label">Poisonous to Pets:</span>
+                                    <span class="detail-value"><%= plant.poisonous_to_pets %></span>
+                                </div>
+                            <% } %>
+                        </div>
+
+                        <% if (plant.description) { %>
+                            <div class="description-section">
+                                <h3 class="description-title">Description</h3>
+                                <p class="description-text"><%= plant.description %></p>
+                            </div>
+                        <% } %>
+
+                        <% if (plant.watering_description || plant.sunlight_description || plant.pruning_description) { %>
+                            <div class="care-instructions">
+                                <h3 class="care-title">Care Instructions</h3>
+                                
+                                <% if (plant.watering_description) { %>
+                                    <div class="care-section">
+                                        <h4 class="care-subtitle">Watering</h4>
+                                        <p class="care-text"><%= plant.watering_description %></p>
+                                    </div>
+                                <% } %>
+                                
+                                <% if (plant.sunlight_description) { %>
+                                    <div class="care-section">
+                                        <h4 class="care-subtitle">Sunlight</h4>
+                                        <p class="care-text"><%= plant.sunlight_description %></p>
+                                    </div>
+                                <% } %>
+                                
+                                <% if (plant.pruning_description) { %>
+                                    <div class="care-section">
+                                        <h4 class="care-subtitle">Pruning</h4>
+                                        <p class="care-text"><%= plant.pruning_description %></p>
+                                    </div>
+                                <% } %>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/plant-details.js"></script>
+</body>
+</html>

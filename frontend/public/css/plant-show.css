@@ -1,0 +1,544 @@
+.plant-show-body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: var(--very-light-green);
+  background-image: url('/images/backgrounds/plant-show.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: var(--dark-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.plant-show-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  padding: 15px 0;
+  border-bottom: 3px solid var(--primary-green);
+  transition: all var(--transition-normal);
+}
+
+.plant-show-nav .nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+}
+
+.plant-show-nav .nav-left {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.plant-show-nav .nav-center {
+  flex: 1;
+  text-align: center;
+}
+
+.plant-show-nav .nav-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.plant-show-nav .nav-logo-link {
+  text-decoration: none;
+  transition: all var(--transition-normal);
+  display: inline-block;
+}
+
+.plant-show-nav .nav-logo-link:hover {
+  transform: scale(1.05);
+}
+
+.plant-show-nav .nav-logo-link:hover .nav-title {
+  color: var(--primary-green);
+}
+
+.plant-show-nav .nav-title {
+  color: var(--dark-text);
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin: 0;
+  transition: all var(--transition-normal);
+  cursor: pointer;
+}
+
+.my-plants-nav-btn {
+  background: var(--primary-green);
+  color: var(--white);
+  padding: 12px 24px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 1px;
+  transition: all var(--transition-normal);
+  text-transform: uppercase;
+}
+
+.my-plants-nav-btn:hover {
+  background: var(--primary-green-hover);
+  color: var(--white);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(60, 158, 86, 0.3);
+}
+
+.plant-show-main {
+  padding-top: 80px;
+  min-height: 100vh;
+  position: relative;
+}
+
+.plant-show-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 50px 30px;
+  position: relative;
+}
+
+.plant-show-layout {
+  display: grid;
+  grid-template-columns: 500px 1fr;
+  gap: 60px;
+  background: var(--white);
+  border-radius: 25px;
+  padding: 0;
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  border: 3px solid var(--primary-green);
+}
+
+.plant-card-large {
+  width: 500px;
+  height: 600px;
+  background: var(--white);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.plant-image-large {
+  position: relative;
+  height: 520px;
+  width: 100%;
+  overflow: hidden;
+  background: var(--light-gray);
+  flex-shrink: 0;
+}
+
+.plant-photo-large {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.plant-actions {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.action-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 3px solid var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 700;
+  transition: all var(--transition-normal);
+  cursor: pointer;
+  color: var(--dark-text);
+}
+
+.info-btn {
+  background: var(--light-gray);
+}
+
+.info-btn:hover {
+  background: var(--primary-green);
+  color: var(--white);
+  transform: scale(1.1);
+}
+
+.edit-btn {
+  background: var(--light-gray);
+}
+
+.edit-btn:hover {
+  background: var(--primary-green);
+  color: var(--white);
+  transform: scale(1.1);
+}
+
+.plant-name-large {
+  background: var(--primary-green);
+  color: var(--white);
+  padding: 15px 20px;
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.plant-info-section {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 600px;
+}
+
+.plant-details {
+  flex: 1;
+}
+
+.plant-scientific-name {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--dark-text);
+  margin: 0 0 30px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.care-info {
+  margin-bottom: 40px;
+}
+
+.care-item {
+  margin-bottom: 20px;
+}
+
+.care-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--dark-text);
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.care-date {
+  font-size: 14px;
+  color: var(--gray-text);
+  font-weight: 500;
+}
+
+.plant-care-actions {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.care-action-btn {
+  flex: 1;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.water-btn {
+  background: #4A90E2;
+  color: var(--white);
+}
+
+.water-btn:hover {
+  background: #357ABD;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
+}
+
+.sunfill-btn {
+  background: #FFA500;
+  color: var(--white);
+}
+
+.sunfill-btn:hover {
+  background: #E6940A;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 165, 0, 0.4);
+}
+
+.delete-plant-container {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 999;
+}
+
+.delete-plant-btn {
+  width: 70px;
+  height: 70px;
+  background: var(--error-red);
+  color: var(--white);
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+  transition: all var(--transition-normal);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.delete-plant-btn:hover {
+  background: #c0392b;
+  transform: scale(1.1);
+  box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-normal);
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.delete-modal {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 450px;
+  width: 90%;
+  text-align: center;
+  transform: scale(0.8);
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-xl);
+}
+
+.modal-overlay.active .delete-modal {
+  transform: scale(1);
+}
+
+.modal-question {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--dark-text);
+  margin: 0 0 20px 0;
+  text-transform: uppercase;
+}
+
+.modal-plant-name {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--dark-text);
+  margin: 0 0 30px 0;
+  text-transform: uppercase;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.modal-btn {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  min-width: 120px;
+}
+
+.confirm-delete-btn {
+  background: var(--error-red);
+  color: var(--white);
+}
+
+.confirm-delete-btn:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+}
+
+.cancel-btn {
+  background: var(--gray-text);
+  color: var(--white);
+}
+
+.cancel-btn:hover {
+  background: #555555;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+@media (max-width: 1200px) {
+  .plant-show-layout {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .plant-card-large {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .plant-show-container {
+    padding: 30px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .plant-show-nav .nav-container {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px 20px;
+  }
+  
+  .plant-show-nav .nav-left,
+  .plant-show-nav .nav-center,
+  .plant-show-nav .nav-right {
+    flex: none;
+  }
+  
+  .plant-show-nav .nav-title {
+    font-size: 20px;
+  }
+  
+  .my-plants-nav-btn {
+    padding: 10px 20px;
+    font-size: 12px;
+  }
+  
+  .plant-show-main {
+    padding-top: 120px;
+  }
+  
+  .plant-show-container {
+    padding: 20px 15px;
+  }
+  
+  .plant-card-large {
+    height: 500px;
+  }
+  
+  .plant-image-large {
+    height: 420px;
+  }
+  
+  .plant-info-section {
+    padding: 30px;
+  }
+  
+  .plant-scientific-name {
+    font-size: 24px;
+  }
+  
+  .plant-care-actions {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .action-btn {
+    width: 45px;
+    height: 45px;
+    font-size: 18px;
+  }
+  
+  .delete-plant-container {
+    bottom: 20px;
+    right: 20px;
+  }
+  
+  .delete-plant-btn {
+    width: 60px;
+    height: 60px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .plant-show-container {
+    padding: 15px 10px;
+  }
+  
+  .plant-card-large {
+    height: 450px;
+  }
+  
+  .plant-image-large {
+    height: 370px;
+  }
+  
+  .plant-info-section {
+    padding: 25px;
+  }
+  
+  .plant-scientific-name {
+    font-size: 20px;
+  }
+  
+  .delete-modal {
+    padding: 30px;
+    max-width: 350px;
+  }
+  
+  .modal-plant-name {
+    font-size: 24px;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

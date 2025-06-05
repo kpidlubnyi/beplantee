@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'Error' %> - BePlantee</title>
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body class="auth-body">
+    <div class="auth-container">
+        <div class="auth-background">
+            <div class="auth-overlay"></div>
+        </div>
+        
+        <div class="auth-content">
+            <div class="auth-logo">
+                <h1>BEPLANTEE</h1>
+            </div>
+            
+            <div class="auth-form-container">
+                <div class="error-container">
+                    <h2><%= title || 'Error' %></h2>
+                    <p><%= message %></p>
+                    <% if (error && error.status) { %>
+                        <p>Status: <%= error.status %></p>
+                    <% } %>
+                </div>
+                
+                <div class="auth-switch">
+                    <a href="/" class="auth-switch-link">
+                        GO HOME
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

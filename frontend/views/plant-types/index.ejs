@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/plant-types.css">
+</head>
+<body class="plant-types-body">
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-left">
+            </div>
+            
+            <div class="nav-center">
+                <a href="/" class="nav-logo-link">
+                    <h1 class="nav-title">BEPLANTEE</h1>
+                </a>
+            </div>
+            
+            <div class="nav-right">
+                <% if (isAuthenticated) { %>
+                    <a href="/plants" class="nav-button">MY PLANTS</a>
+                <% } else { %>
+                    <a href="/auth/login" class="nav-button">SIGN UP / SIGN IN</a>
+                <% } %>
+            </div>
+        </div>
+    </nav>
+
+    <main class="plant-types-main">
+        <div class="plant-types-container">
+            <div class="plant-types-header">
+                <p class="search-label">Enter Scientific and Common Name</p>
+            </div>
+
+            <div class="search-section">
+                <div class="search-container">
+                    <form class="search-form" method="GET" action="/plant-types">
+                        <input 
+                            type="text" 
+                            name="search" 
+                            class="search-input" 
+                            placeholder="Search for plant types..."
+                            value="<%= searchQuery %>"
+                            autocomplete="off"
+                        >
+                        <button type="submit" class="search-btn">Search</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="plant-types-content">
+                <% if (searchQuery) { %>
+                    <div class="search-results-info">
+                        Showing results for "<%= searchQuery %>" 
+                        (<%= pagination.totalItems %> found)
+                        <button type="button" class="clear-search" onclick="clearSearch()">Clear search</button>
+                    </div>
+                <% } %>
+
+                <% if (typeof error !== 'undefined' && error) { %>
+                    <div class="error-state">
+                        <p><%= error %></p>
+                    </div>
+                <% } else if (plantTypes.length === 0 && searchQuery) { %>
+                    <div class="empty-state">
+                        <h3>No plant types found</h3>
+                        <p>Try adjusting your search terms or <a href="/plant-types" class="clear-search">browse all plant types</a></p>
+                    </div>
+                <% } else if (plantTypes.length === 0) { %>
+                    <div class="empty-state">
+                        <h3>No plant types available</h3>
+                        <p>Plant types database is currently empty</p>
+                    </div>
+                <% } else { %>
+                    <div class="plant-types-grid">
+                        <% plantTypes.forEach(function(plantType, index) { %>
+                            <a href="/plant-types/<%= plantType.id %>" class="plant-type-item">
+                                <%= plantType.display_name || plantType.common_name || plantType.scientific_name %>
+                            </a>
+                        <% }); %>
+                    </div>
+
+                    <% if (pagination.totalPages > 1) { %>
+                        <div class="pagination-container">
+                            <div class="pagination">
+                                <% if (pagination.hasPrev) { %>
+                                    <a href="/plant-types?<%= searchQuery ? 'search=' + encodeURIComponent(searchQuery) + '&' : '' %>page=<%= pagination.prevPage %>" class="page-link prev-next">← Prev</a>
+                                <% } else { %>
+                                    <span class="page-link prev-next disabled">← Prev</span>
+                                <% } %>
+
+                                <% if (pagination.pages[0] && pagination.pages[0].number > 1) { %>
+                                    <a href="/plant-types?<%= searchQuery ? 'search=' + encodeURIComponent(searchQuery) + '&' : '' %>page=1" class="page-link number">1</a>
+                                    <% if (pagination.pages[0].number > 2) { %>
+                                        <span class="pagination-dots">...</span>
+                                    <% } %>
+                                <% } %>
+
+                                <% pagination.pages.forEach(function(page) { %>
+                                    <% if (page.isCurrent) { %>
+                                        <span class="page-link number current"><%= page.number %></span>
+                                    <% } else { %>
+                                        <a href="/plant-types?<%= searchQuery ? 'search=' + encodeURIComponent(searchQuery) + '&' : '' %>page=<%= page.number %>" class="page-link number"><%= page.number %></a>
+                                    <% } %>
+                                <% }); %>
+
+                                <% if (pagination.pages[pagination.pages.length - 1] && pagination.pages[pagination.pages.length - 1].number < pagination.totalPages) { %>
+                                    <% if (pagination.pages[pagination.pages.length - 1].number < pagination.totalPages - 1) { %>
+                                        <span class="pagination-dots">...</span>
+                                    <% } %>
+                                    <a href="/plant-types?<%= searchQuery ? 'search=' + encodeURIComponent(searchQuery) + '&' : '' %>page=<%= pagination.totalPages %>" class="page-link number"><%= pagination.totalPages %></a>
+                                <% } %>
+
+                                <% if (pagination.hasNext) { %>
+                                    <a href="/plant-types?<%= searchQuery ? 'search=' + encodeURIComponent(searchQuery) + '&' : '' %>page=<%= pagination.nextPage %>" class="page-link prev-next">Next →</a>
+                                <% } else { %>
+                                    <span class="page-link prev-next disabled">Next →</span>
+                                <% } %>
+                            </div>
+                        </div>
+
+                        <div class="pagination-info">
+                            Showing <%= ((pagination.currentPage - 1) * 20) + 1 %>-<%= Math.min(pagination.currentPage * 20, pagination.totalItems) %> of <%= pagination.totalItems %> plant types
+                        </div>
+                    <% } %>
+                <% } %>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/plant-types.js"></script>
+</body>
+</html>

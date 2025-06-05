@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/add-plant.css">
+</head>
+<body class="add-plant-body">
+    <nav class="add-plant-nav">
+        <div class="nav-container">
+            <div class="nav-left">
+                <span class="page-subtitle">ADD PLANT</span>
+            </div>
+            
+            <div class="nav-center">
+                <a href="/" class="nav-logo-link">
+                    <h1 class="nav-title">BEPLANTEE</h1>
+                </a>
+            </div>
+            
+            <div class="nav-right">
+                <a href="/plants" class="plants-nav-btn">MY PLANTS</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="add-plant-main">
+        <div class="add-plant-container">
+            <form class="add-plant-form" id="addPlantForm" action="/plants/add" method="POST" enctype="multipart/form-data">
+                
+                <div class="plant-preview-section">
+                    <div class="plant-preview-card">
+                        <div class="image-upload-area" id="imageUploadArea">
+                            <input type="file" name="image" id="imageInput" accept="image/*" class="image-input">
+                            <div class="upload-content">
+                                <div class="default-plant-image">
+                                    <img src="<%= typeof apiBaseUrl !== 'undefined' ? apiBaseUrl : 'http://localhost:8000' %>/uploads/default_plant.png" alt="Default plant" class="plant-image" id="plantImage">
+                                </div>
+                            </div>
+                            <label for="imageInput" class="upload-button">
+                                📸
+                            </label>
+                        </div>
+                        
+                        <div class="plant-name-display">
+                            <span id="plantNameDisplay">NEW PLANT</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="plant-form-section">
+                    
+                    <div class="form-group">
+                        <input 
+                            type="text" 
+                            name="name" 
+                            id="plantNameInput"
+                            placeholder="NAME OF THE PLANT (MAX. 20)" 
+                            class="plant-input plant-name-input"
+                            maxlength="20"
+                            value="<%= typeof formData !== 'undefined' ? formData.name || '' : '' %>"
+                            required
+                        >
+                        <div class="char-counter">
+                            <span id="charCount">0</span>/20
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="dropdown-container">
+                            <input 
+                                type="text" 
+                                id="plantTypeSearch"
+                                placeholder="KIND" 
+                                class="plant-input dropdown-input"
+                                autocomplete="off"
+                                required
+                            >
+                            <input type="hidden" name="plant_id" id="selectedPlantId" 
+                                   value="<%= typeof formData !== 'undefined' ? formData.plant_id || '' : '' %>" required>
+                            
+                            <div class="dropdown-arrow">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M7 10L12 15L17 10H7Z" fill="currentColor"/>
+                                </svg>
+                            </div>
+                            
+                            <div class="dropdown-list" id="dropdownList">
+                                <div class="dropdown-loading">Loading plant types...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="confirm-btn" id="confirmBtn" disabled>
+                            CONFIRM
+                        </button>
+                    </div>
+
+                    <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="error-message">
+                            <%= error %>
+                        </div>
+                    <% } %>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            <% if (typeof formData !== 'undefined' && formData.name) { %>
+                const nameInput = document.getElementById('plantNameInput');
+                const nameDisplay = document.getElementById('plantNameDisplay');
+                const charCount = document.getElementById('charCount');
+                
+                if (nameInput && nameDisplay && charCount) {
+                    const name = '<%= formData.name %>';
+                    nameInput.value = name;
+                    nameDisplay.textContent = name.toUpperCase();
+                    charCount.textContent = name.length;
+                }
+            <% } %>
+            
+            <% if (typeof formData !== 'undefined' && formData.plant_id) { %>
+                const plantIdInput = document.getElementById('selectedPlantId');
+                if (plantIdInput) {
+                    plantIdInput.value = '<%= formData.plant_id %>';
+                    selectedPlantId = '<%= formData.plant_id %>';
+                }
+            <% } %>
+        });
+    </script>
+    <script src="/js/add-plant.js"></script>
+</body>
+</html>

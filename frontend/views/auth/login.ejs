@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body class="auth-body">
+    <div class="auth-container">
+        <div class="auth-background">
+            <div class="auth-overlay"></div>
+        </div>
+        
+        <div class="auth-header">
+            <span class="auth-header-link">SIGN IN</span>
+        </div>
+        
+        <div class="auth-content">
+            <div class="auth-logo">
+                <a href="/" class="auth-logo-link">
+                    <h1>BEPLANTEE</h1>
+                </a>
+            </div>
+            
+            <div class="auth-form-container">
+                <% if (success) { %>
+                    <div class="success-message">
+                        <%= success %>
+                    </div>
+                <% } %>
+                
+                <% if (errors && errors.length > 0) { %>
+                    <div class="error-messages">
+                        <% errors.forEach(function(error) { %>
+                            <div class="error-message"><%= error %></div>
+                        <% }); %>
+                    </div>
+                <% } %>
+                
+                <form class="auth-form" action="/auth/login" method="POST" id="loginForm">
+                    <div class="form-group">
+                        <input 
+                            type="text" 
+                            name="username" 
+                            placeholder="USERNAME" 
+                            class="form-input"
+                            value="<%= formData.username || '' %>"
+                            required
+                            autocomplete="username"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <input 
+                            type="password" 
+                            name="password" 
+                            placeholder="PASSWORD" 
+                            class="form-input"
+                            required
+                            autocomplete="current-password"
+                        >
+                    </div>
+                    
+                    <button type="submit" class="auth-submit-btn">
+                        SIGN IN
+                    </button>
+                </form>
+                
+                <div class="auth-links">
+                    <a href="/auth/register" class="auth-link-btn">
+                        DON'T HAVE ACCOUNT?
+                    </a>
+                    <a href="/auth/forgot-password" class="auth-link-btn">
+                        FORGOT PASSWORD?
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/js/auth.js"></script>
+</body>
+</html>

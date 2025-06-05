@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/add-plant.css">
+</head>
+<body class="add-plant-body">
+    <nav class="add-plant-nav">
+        <div class="nav-container">
+            <div class="nav-left">
+                <span class="page-subtitle">EDIT PLANT</span>
+            </div>
+            
+            <div class="nav-center">
+                <a href="/" class="nav-logo-link">
+                    <h1 class="nav-title">BEPLANTEE</h1>
+                </a>
+            </div>
+            
+            <div class="nav-right">
+                <a href="/plants/<%= plant.id %>" class="plants-nav-btn">BACK TO PLANT</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="add-plant-main">
+        <div class="add-plant-container">
+            <form class="add-plant-form" id="editPlantForm" action="/plants/<%= plant.id %>" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="_method" value="PATCH">
+                
+                <div class="plant-preview-section">
+                    <div class="plant-preview-card">
+                        <div class="image-upload-area has-image" id="imageUploadArea">
+                            <input type="file" name="image" id="imageInput" accept="image/*" class="image-input">
+                            <div class="upload-content">
+                                <div class="default-plant-image">
+                                    <img src="<%= typeof apiBaseUrl !== 'undefined' ? apiBaseUrl : 'http://localhost:8000' %>/uploads/<%= plant.image || 'default_plant.png' %>" 
+                                        alt="<%= plant.name %>" 
+                                        class="plant-image" 
+                                        id="plantImage"
+                                        data-fallback="<%= typeof apiBaseUrl !== 'undefined' ? apiBaseUrl : 'http://localhost:8000' %>/uploads/default_plant.png"
+                                        data-default-image="<%= typeof apiBaseUrl !== 'undefined' ? apiBaseUrl : 'http://localhost:8000' %>/uploads/default_plant.png">
+                                </div>
+                            </div>
+                            
+                            <% if (plant.image && plant.image !== 'default_plant.png') { %>
+                                <button type="button" class="remove-image-btn" id="removeImageBtn" title="Remove image">
+                                    🗑️
+                                </button>
+                            <% } %>
+                            
+                            <label for="imageInput" class="upload-button">
+                                📸
+                            </label>
+                        </div>
+
+                        <div class="plant-name-display">
+                            <span id="plantNameDisplay"><%= plant.name.toUpperCase() %></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="plant-form-section">
+                    
+                    <div class="form-group">
+                        <input 
+                            type="text" 
+                            name="name" 
+                            id="plantNameInput"
+                            placeholder="NAME OF THE PLANT (MAX. 20)" 
+                            class="plant-input plant-name-input"
+                            maxlength="20"
+                            value="<%= plant.name %>"
+                            required
+                        >
+                        <div class="char-counter">
+                            <span id="charCount"><%= plant.name.length %></span>/20
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="dropdown-container">
+                            <input 
+                                type="text" 
+                                id="plantTypeSearch"
+                                placeholder="KIND" 
+                                class="plant-input dropdown-input"
+                                autocomplete="off"
+                                value="<%= plant.plant && plant.plant.common_name ? plant.plant.common_name : plant.plant && plant.plant.scientific_name ? plant.plant.scientific_name : '' %>"
+                                required
+                            >
+                            <input type="hidden" name="plant_id" id="selectedPlantId" value="<%= plant.plant_id %>" required>
+                            
+                            <div class="dropdown-arrow">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M7 10L12 15L17 10H7Z" fill="currentColor"/>
+                                </svg>
+                            </div>
+                            
+                            <div class="dropdown-list" id="dropdownList">
+                                <div class="dropdown-loading">Loading plant types...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="confirm-btn" id="confirmBtn">
+                            UPDATE PLANT
+                        </button>
+                    </div>
+
+                    <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="error-message">
+                            <%= error %>
+                        </div>
+                    <% } %>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initEditPlantPage();
+            console.log('🌱 Edit Plant page initialized');
+        });
+
+        let plantTypes = [];
+        let selectedPlantId = <%= plant.plant_id %>;
+
+        function initEditPlantPage() {
+            initNameInput();
+            initImageUpload();
+            initRemoveImageButton();
+            initDropdown();
+            initFormValidation();
+            loadPlantTypes();
+            validateForm(); 
+        }
+
+        function initNameInput() {
+            const nameInput = document.getElementById('plantNameInput');
+            const nameDisplay = document.getElementById('plantNameDisplay');
+            const charCount = document.getElementById('charCount');
+            
+            if (!nameInput || !nameDisplay || !charCount) return;
+            
+            nameInput.addEventListener('input', function() {
+                const value = this.value.trim();
+                const length = this.value.length;
+                
+                charCount.textContent = length;
+                
+                if (value) {
+                    nameDisplay.textContent = value.toUpperCase();
+                } else {
+                    nameDisplay.textContent = 'EDIT PLANT';
+                }
+                
+                if (length > 15) {
+                    charCount.style.color = 'var(--error-red)';
+                } else if (length > 10) {
+                    charCount.style.color = 'var(--primary-green)';
+                } else {
+                    charCount.style.color = 'var(--gray-text)';
+                }
+                
+                validateForm();
+            });
+            
+            nameInput.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            nameInput.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+        }
+
+        function initImageUpload() {
+            const imageInput = document.getElementById('imageInput');
+            const plantImage = document.getElementById('plantImage');
+            const uploadArea = document.getElementById('imageUploadArea');
+            const uploadButton = document.querySelector('.upload-button');
+            
+            if (!imageInput || !plantImage || !uploadArea) return;
+            
+            imageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    handleImageUpload(file);
+                }
+            });
+            
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('drag-over');
+            });
+            
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+            });
+            
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+                
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    imageInput.files = e.dataTransfer.files;
+                    handleImageUpload(file);
+                }
+            });
+            
+            uploadButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                imageInput.click();
+            });
+
+            plantImage.addEventListener('error', function() {
+                const fallbackSrc = this.dataset.fallback;
+                if (fallbackSrc && this.src !== fallbackSrc) {
+                    this.src = fallbackSrc;
+                }
+            });
+        }
+
+        function initRemoveImageButton() {
+            const removeBtn = document.getElementById('removeImageBtn');
+            const plantImage = document.getElementById('plantImage');
+            const uploadArea = document.getElementById('imageUploadArea');
+            
+            if (!removeBtn) return;
+            
+            removeBtn.addEventListener('click', async function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (confirm('Are you sure you want to remove this image?')) {
+                    try {
+                        const defaultSrc = plantImage.dataset.defaultImage;
+                        plantImage.src = defaultSrc;
+                        
+                        this.style.display = 'none';
+                        
+                        const hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = 'remove_image';
+                        hiddenInput.value = 'true';
+                        hiddenInput.id = 'removeImageFlag';
+                        
+                        const existingFlag = document.getElementById('removeImageFlag');
+                        if (existingFlag) {
+                            existingFlag.remove();
+                        }
+                        
+                        document.getElementById('editPlantForm').appendChild(hiddenInput);
+                        
+                        showSuccess('Image will be removed when you save changes');
+                        
+                    } catch (error) {
+                        console.error('Error removing image:', error);
+                        showError('Failed to prepare image removal');
+                    }
+                }
+            });
+        }
+
+        function handleImageUpload(file) {
+            const plantImage = document.getElementById('plantImage');
+            const uploadArea = document.getElementById('imageUploadArea');
+            const removeBtn = document.getElementById('removeImageBtn');
+            
+            if (!file.type.startsWith('image/')) {
+                showError('Please select a valid image file');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                showError('Image file size must be less than 5MB');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                plantImage.src = e.target.result;
+                uploadArea.classList.add('has-image');
+                
+                if (removeBtn) {
+                    removeBtn.style.display = 'flex';
+                } else {
+                    const newRemoveBtn = document.createElement('button');
+                    newRemoveBtn.type = 'button';
+                    newRemoveBtn.className = 'remove-image-btn';
+                    newRemoveBtn.id = 'removeImageBtn';
+                    newRemoveBtn.title = 'Remove image';
+                    newRemoveBtn.innerHTML = '🗑️';
+                    uploadArea.appendChild(newRemoveBtn);
+                    
+                    initRemoveImageButton();
+                }
+                
+                const removeFlag = document.getElementById('removeImageFlag');
+                if (removeFlag) {
+                    removeFlag.remove();
+                }
+                
+                showSuccess('Image uploaded successfully!');
+            };
+            
+            reader.onerror = function() {
+                showError('Failed to read image file');
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        function initFormValidation() {
+            const form = document.getElementById('editPlantForm');
+            const confirmBtn = document.getElementById('confirmBtn');
+            
+            if (!form || !confirmBtn) return;
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (validateForm()) {
+                    submitForm();
+                }
+            });
+        }
+
+        function validateForm() {
+            const nameInput = document.getElementById('plantNameInput');
+            const confirmBtn = document.getElementById('confirmBtn');
+            
+            const hasName = nameInput.value.trim().length > 0;
+            const hasPlantType = selectedPlantId !== null;
+            
+            const isValid = hasName && hasPlantType;
+            
+            confirmBtn.disabled = !isValid;
+            confirmBtn.classList.toggle('valid', isValid);
+            
+            return isValid;
+        }
+
+        async function submitForm() {
+            const form = document.getElementById('editPlantForm');
+            const confirmBtn = document.getElementById('confirmBtn');
+            
+            try {
+                confirmBtn.classList.add('loading');
+                confirmBtn.disabled = true;
+                
+                form.submit();
+                
+            } catch (error) {
+                console.error('Error updating plant:', error);
+                showError('Failed to update plant. Please try again.');
+                
+                confirmBtn.classList.remove('loading');
+                validateForm();
+            }
+        }
+
+        function initDropdown() {
+            const searchInput = document.getElementById('plantTypeSearch');
+            const dropdownContainer = document.querySelector('.dropdown-container');
+            const dropdownList = document.getElementById('dropdownList');
+            
+            if (!searchInput || !dropdownContainer || !dropdownList) return;
+            
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase().trim();
+                filterPlantTypes(query);
+                openDropdown();
+            });
+            
+            searchInput.addEventListener('focus', function() {
+                openDropdown();
+                if (plantTypes.length === 0) {
+                    loadPlantTypes();
+                }
+            });
+            
+            searchInput.addEventListener('blur', function() {
+                setTimeout(() => closeDropdown(), 150);
+            });
+            
+            document.addEventListener('click', function(e) {
+                if (!dropdownContainer.contains(e.target)) {
+                    closeDropdown();
+                }
+            });
+        }
+
+        async function loadPlantTypes() {
+            const dropdownList = document.getElementById('dropdownList');
+            
+            try {
+                dropdownList.innerHTML = '<div class="dropdown-loading">Loading plant types...</div>';
+                
+                const response = await fetch('/api/plant-types');
+                const data = await response.json();
+                
+                if (data.plant_types && data.plant_types.length > 0) {
+                    plantTypes = data.plant_types;
+                    renderDropdownItems(plantTypes);
+                } else {
+                    dropdownList.innerHTML = '<div class="dropdown-no-results">No plant types available</div>';
+                }
+            } catch (error) {
+                console.error('Error loading plant types:', error);
+                dropdownList.innerHTML = '<div class="dropdown-no-results">Failed to load plant types</div>';
+            }
+        }
+
+        function renderDropdownItems(items) {
+            const dropdownList = document.getElementById('dropdownList');
+            
+            if (items.length === 0) {
+                dropdownList.innerHTML = '<div class="dropdown-no-results">No matching plant types found</div>';
+                return;
+            }
+            
+            dropdownList.innerHTML = items.map(plant => `
+                <div class="dropdown-item" data-id="${plant.id}" data-name="${plant.display_name || plant.common_name || plant.scientific_name}">
+                    ${plant.display_name || plant.common_name || plant.scientific_name}
+                </div>
+            `).join('');
+            
+            dropdownList.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    selectPlantType(this);
+                });
+            });
+        }
+
+        function filterPlantTypes(query) {
+            if (!query) {
+                renderDropdownItems(plantTypes);
+                return;
+            }
+            
+            const filtered = plantTypes.filter(plant => {
+                const name = (plant.display_name || plant.common_name || plant.scientific_name || '').toLowerCase();
+                return name.includes(query);
+            });
+            
+            renderDropdownItems(filtered);
+        }
+
+        function selectPlantType(item) {
+            const searchInput = document.getElementById('plantTypeSearch');
+            const selectedPlantIdInput = document.getElementById('selectedPlantId');
+            
+            const plantId = item.dataset.id;
+            const plantName = item.dataset.name;
+            
+            searchInput.value = plantName;
+            selectedPlantIdInput.value = plantId;
+            selectedPlantId = plantId;
+            
+            closeDropdown();
+            validateForm();
+            
+            console.log('Selected plant:', { id: plantId, name: plantName });
+        }
+
+        function openDropdown() {
+            const dropdownContainer = document.querySelector('.dropdown-container');
+            dropdownContainer.classList.add('open');
+        }
+
+        function closeDropdown() {
+            const dropdownContainer = document.querySelector('.dropdown-container');
+            dropdownContainer.classList.remove('open');
+        }
+
+        function showError(message) {
+            showNotification(message, 'error');
+        }
+
+        function showSuccess(message) {
+            showNotification(message, 'success');
+        }
+
+        function showNotification(message, type = 'info') {
+            if (window.BePlantee && window.BePlantee.showNotification) {
+                window.BePlantee.showNotification(message, type);
+            } else {
+                console.log(`${type}: ${message}`);
+            }
+        }
+    </script>
+</body>
+</html>
